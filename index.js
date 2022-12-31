@@ -1,70 +1,69 @@
 const { gql, ApolloServer } = require('apollo-server');
 
-const products = [
-    {
-        id: 1,
-        name: 'Notebook',
-        value: 7599.99
-    },
-    {
-        id: 2,
-        name: 'TV',
-        value: 6000
-    }
-]
-
 const users = [
     {
         id: 1,
         name: 'João',
-        age: 28,
-        salary: 13923.22,
-        active: true
+        email: 'joão@email.com',
+        phone_fixed: '11 1234 1234',
+        profile: 1
+    },
+    {
+        id: 1,
+        name: 'Maria',
+        email: 'maria@email.com',
+        phone_fixed: '11 4342 4321',
+        profile: 2
+    }
+];
+
+const profiles = [
+    {
+        id: 1,
+        description: 'ADMIN'
     },
     {
         id: 2,
-        name: 'Maria',
-        age: 22,
-        salary: 8230,
-        active: true
+        description: 'NORMAL'
     }
-]
+];
 
 const typeDefs = gql`
-    type Product {
-        id: ID
-        name: String
-        value: Float
-    }
 
     type User {
         id: ID
         name: String
-        age: Int
-        salary: Float
-        active: Boolean
+        email: String
+        phone: String
+        profile: Profile
+    }
+
+    type Profile {
+        id: ID
+        description: String
     }
 
     type Query {
-        users: [User]!
-        products: [Product]!
-        user(id: Int, name: String): User
+        user(id: ID): User
+        profiles: [Profile]
     }
 `;
 
 const resolvers = {
+    User: {
+        phone(user) {
+            return user.phone_fixed;
+        },
+        profile(user) {
+            return profiles.find(p => p.id === user.profile);
+        }
+    },
     Query: {
-        products() {
-            return products;
-        },
-        users() {
-            return users;
-        },
         user(obj, args) {
-            const { id, name } = args;
-            if (!!id)
-                return users.find(u => u.id === id);
-            return users.find(u => u.name === name);
+            return users.find(u => u.id === args.id);
+        },
+        profiles() {
+            return profiles;
         }
     }
 };
