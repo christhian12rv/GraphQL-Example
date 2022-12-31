@@ -1,0 +1,1 @@
+A example project of GraphQL.
