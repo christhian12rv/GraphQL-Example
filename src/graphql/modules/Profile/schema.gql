@@ -1,0 +1,13 @@
+enum ProfileType {
+    ADMIN
+    NORMAL
+}
+
+type Profile {
+    id: ID
+    description: ProfileType
+}
+
+type Query {
+    profiles: [Profile]
+}
